@@ -1,7 +1,7 @@
 ﻿using NetMusicLib.Enums;
 
 namespace NetMusicLib.Models;
-public class MusicBase
+public class Music
 {
     public string Id { get; set; } = null!;
 

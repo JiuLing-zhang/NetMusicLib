@@ -1,16 +1,16 @@
 ﻿namespace NetMusicLib.Models.KuWo;
-public class HttpSongMenuResult
+internal class HttpSongMenuResult
 {
     public int code { get; set; }
     public HttpSongMenuData? data { get; set; }
 }
 
-public class HttpSongMenuData
+internal class HttpSongMenuData
 {
     public List<HttpSongMenuDataList>? musicList { get; set; }
 }
 
-public class HttpSongMenuDataList
+internal class HttpSongMenuDataList
 {
     public string artist { get; set; } = null!;
     public string pic { get; set; } = null!;
@@ -21,7 +21,7 @@ public class HttpSongMenuDataList
     public HttpSongMenuDataListPayInfo payInfo { get; set; } = null!;
 }
 
-public class HttpSongMenuDataListPayInfo
+internal class HttpSongMenuDataListPayInfo
 {
     public string listen_fragment { get; set; } = null!;
 }

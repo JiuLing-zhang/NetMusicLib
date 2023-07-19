@@ -1,5 +1,5 @@
 ﻿namespace NetMusicLib;
-public class UrlBase
+internal class UrlBase
 {
     public class NetEase
     {

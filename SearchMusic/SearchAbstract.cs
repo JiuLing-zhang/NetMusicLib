@@ -2,7 +2,7 @@
 using NetMusicLib.Models;
 
 namespace NetMusicLib.SearchMusic;
-public abstract class SearchAbstract
+internal abstract class SearchAbstract
 {
     private SearchAbstract? _nextHandler;
     private readonly PlatformEnum _platform;
@@ -15,12 +15,12 @@ public abstract class SearchAbstract
         _nextHandler = nextHandler;
     }
 
-    public async Task<List<MusicResultShow>> SearchAsync(PlatformEnum platform, string keyword)
+    public async Task<List<Music>> SearchAsync(PlatformEnum platform, string keyword)
     {
-        return await SearchAsync(platform, keyword, new List<MusicResultShow>());
+        return await SearchAsync(platform, keyword, new List<Music>());
     }
 
-    protected async Task<List<MusicResultShow>> SearchAsync(PlatformEnum platform, string keyword, List<MusicResultShow> allResult)
+    protected async Task<List<Music>> SearchAsync(PlatformEnum platform, string keyword, List<Music> allResult)
     {
         if ((platform & _platform) == _platform)
         {
@@ -32,5 +32,5 @@ public abstract class SearchAbstract
         }
         return allResult;
     }
-    public abstract Task<List<MusicResultShow>> DoSearchAsync(string keyword, List<MusicResultShow> allResult);
+    public abstract Task<List<Music>> DoSearchAsync(string keyword, List<Music> allResult);
 }

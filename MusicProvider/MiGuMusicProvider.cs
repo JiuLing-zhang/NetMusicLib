@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using JiuLing.CommonLibs.ExtensionMethods;
+using JiuLing.CommonLibs.Net;
 using JiuLing.CommonLibs.Security;
 using Microsoft.Extensions.Logging;
 using NetMusicLib.Enums;
@@ -8,7 +9,7 @@ using NetMusicLib.Models.MiGu;
 using NetMusicLib.Utils;
 
 namespace NetMusicLib.MusicProvider;
-public class MiGuMusicProvider : IMusicProvider
+internal class MiGuMusicProvider : IMusicProvider
 {
     private readonly HttpClient _httpClient;
     private const PlatformEnum Platform = PlatformEnum.MiGu;
@@ -56,9 +57,9 @@ public class MiGuMusicProvider : IMusicProvider
     }
 
 
-    public async Task<List<MusicResultShow>> SearchAsync(string keyword)
+    public async Task<List<Music>> SearchAsync(string keyword)
     {
-        var musics = new List<MusicResultShow>();
+        var musics = new List<Music>();
         try
         {
             string args = MiGuUtils.GetSearchArgs(keyword);
@@ -86,7 +87,7 @@ public class MiGuMusicProvider : IMusicProvider
 
             foreach (var htmlMusic in htmlMusics)
             {
-                musics.Add(new MusicResultShow()
+                musics.Add(new Music()
                 {
                     Id = MD5Utils.GetStringValueToLower($"{Platform}-{htmlMusic.id}"),
                     Platform = Platform,
@@ -120,7 +121,8 @@ public class MiGuMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentIphone);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.IphoneUserAgent);
+
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -177,7 +179,7 @@ public class MiGuMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentIphone);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.IphoneUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -261,11 +263,11 @@ public class MiGuMusicProvider : IMusicProvider
         return Task.FromResult(MiGuUtils.GetSongMenusFromTop());
     }
 
-    public async Task<List<MusicResultShow>> GetTopMusicsAsync(string topId)
+    public async Task<List<Music>> GetTopMusicsAsync(string topId)
     {
         try
         {
-            var musics = new List<MusicResultShow>();
+            var musics = new List<Music>();
             string url = $"{UrlBase.MiGu.GetTopMusicsUrl}{topId}";
             var request = new HttpRequestMessage()
             {
@@ -303,7 +305,7 @@ public class MiGuMusicProvider : IMusicProvider
                     duration = duration.Add(TimeSpan.FromSeconds(ss));
                 }
 
-                musics.Add(new MusicResultShow()
+                musics.Add(new Music()
                 {
                     Id = MD5Utils.GetStringValueToLower($"{Platform}-{song.copyrightId}"),
                     Platform = Platform,
@@ -321,15 +323,15 @@ public class MiGuMusicProvider : IMusicProvider
         catch (Exception ex)
         {
             _logger?.LogInformation("咪咕排行榜歌单失败。", ex);
-            return new List<MusicResultShow>();
+            return new List<Music>();
         }
     }
 
-    public async Task<List<MusicResultShow>> GetTagMusicsAsync(string tagId)
+    public async Task<List<Music>> GetTagMusicsAsync(string tagId)
     {
         try
         {
-            var musics = new List<MusicResultShow>();
+            var musics = new List<Music>();
             string url = $"{UrlBase.MiGu.GetTagMusicsUrl}{tagId}";
             var request = new HttpRequestMessage()
             {
@@ -353,7 +355,7 @@ public class MiGuMusicProvider : IMusicProvider
                 }
                 songId = songId.Substring(songId.LastIndexOf("/") + 1);
 
-                musics.Add(new MusicResultShow()
+                musics.Add(new Music()
                 {
                     Id = MD5Utils.GetStringValueToLower($"{Platform}-{songId}"),
                     Platform = Platform,
@@ -370,7 +372,7 @@ public class MiGuMusicProvider : IMusicProvider
         catch (Exception ex)
         {
             _logger?.LogInformation("咪咕标签歌单失败。", ex);
-            return new List<MusicResultShow>();
+            return new List<Music>();
         }
     }
 

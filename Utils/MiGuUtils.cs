@@ -7,7 +7,7 @@ using NetMusicLib.Models;
 using NetMusicLib.Models.MiGu;
 
 namespace NetMusicLib.Utils;
-public class MiGuUtils
+internal class MiGuUtils
 {
     private static string _channelId = "";
     private static string _sourceId = "";

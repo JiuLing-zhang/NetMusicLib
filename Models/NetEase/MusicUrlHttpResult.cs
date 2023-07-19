@@ -1,7 +1,5 @@
-﻿namespace NetMusicLib.Models.NetEase
+﻿namespace NetMusicLib.Models.NetEase;
+internal class MusicUrlHttpResult
 {
-    public class MusicUrlHttpResult
-    {
-        public string url { get; set; } = null!;
-    }
+    public string url { get; set; } = null!;
 }

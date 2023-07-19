@@ -20,11 +20,6 @@ public class MusicNetPlatform
         _netEaseSearcher.SetNextHandler(_kuGouSearcher);
     }
 
-    public void SetMusicFormatType(MusicFormatTypeEnum musicFormatType)
-    {
-        GlobalSettings.MusicFormatType = musicFormatType;
-    }
-
     public async Task<List<string>> GetHotWordAsync()
     {
         return await MusicProviderFactory.Create(PlatformEnum.KuWo).GetHotWordAsync();
@@ -35,7 +30,7 @@ public class MusicNetPlatform
         return await MusicProviderFactory.Create(PlatformEnum.NetEase).GetSearchSuggestAsync(keyword);
     }
 
-    public async Task<List<MusicResultShow>> SearchAsync(PlatformEnum platform, string keyword)
+    public async Task<List<Music>> SearchAsync(PlatformEnum platform, string keyword)
     {
         return await _miGuSearcher.SearchAsync(platform, keyword);
     }
@@ -73,12 +68,12 @@ public class MusicNetPlatform
         return MusicProviderFactory.Create(platform).GetSongMenusFromTop();
     }
 
-    public async Task<List<MusicResultShow>> GetTopMusicsAsync(PlatformEnum platform, string topId)
+    public async Task<List<Music>> GetTopMusicsAsync(PlatformEnum platform, string topId)
     {
         return await MusicProviderFactory.Create(platform).GetTopMusicsAsync(topId);
     }
 
-    public async Task<List<MusicResultShow>> GetTagMusicsAsync(PlatformEnum platform, string tagId)
+    public async Task<List<Music>> GetTagMusicsAsync(PlatformEnum platform, string tagId)
     {
         return await MusicProviderFactory.Create(platform).GetTagMusicsAsync(tagId);
     }

@@ -1,9 +1,7 @@
-﻿namespace NetMusicLib.Models.KuGou
+﻿namespace NetMusicLib.Models.KuGou;
+internal class MusicDetailHttpResult
 {
-    public class MusicDetailHttpResult
-    {
-        public string img { get; set; } = null!;
-        public string play_url { get; set; } = null!;
-        public string lyrics { get; set; } = null!;
-    }
+    public string img { get; set; } = null!;
+    public string play_url { get; set; } = null!;
+    public string lyrics { get; set; } = null!;
 }

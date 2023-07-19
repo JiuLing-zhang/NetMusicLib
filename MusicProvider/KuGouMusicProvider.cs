@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using JiuLing.CommonLibs.ExtensionMethods;
+using JiuLing.CommonLibs.Net;
 using JiuLing.CommonLibs.Security;
 using Microsoft.Extensions.Logging;
 using NetMusicLib.Enums;
@@ -8,7 +9,7 @@ using NetMusicLib.Models.KuGou;
 using NetMusicLib.Utils;
 
 namespace NetMusicLib.MusicProvider;
-public class KuGouMusicProvider : IMusicProvider
+internal class KuGouMusicProvider : IMusicProvider
 {
     private readonly HttpClient _httpClient;
     private const PlatformEnum Platform = PlatformEnum.KuGou;
@@ -23,9 +24,9 @@ public class KuGouMusicProvider : IMusicProvider
         _httpClient.Timeout = TimeSpan.FromSeconds(5);
 
     }
-    public async Task<List<MusicResultShow>> SearchAsync(string keyword)
+    public async Task<List<Music>> SearchAsync(string keyword)
     {
-        var musics = new List<MusicResultShow>();
+        var musics = new List<Music>();
         try
         {
             string args = KuGouUtils.GetSearchData(keyword);
@@ -38,7 +39,8 @@ public class KuGouMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
+
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -73,7 +75,7 @@ public class KuGouMusicProvider : IMusicProvider
                         AlbumId = httpMusic.AlbumID
                     }).ToJson();
 
-                    var music = new MusicResultShow()
+                    var music = new Music()
                     {
                         Id = MD5Utils.GetStringValueToLower($"{Platform}-{httpMusic.ID}"),
                         Platform = Platform,
@@ -121,7 +123,7 @@ public class KuGouMusicProvider : IMusicProvider
         throw new NotImplementedException();
     }
 
-    public Task<List<MusicResultShow>> GetTopMusicsAsync(string topId)
+    public Task<List<Music>> GetTopMusicsAsync(string topId)
     {
         throw new NotImplementedException();
     }
@@ -168,7 +170,7 @@ public class KuGouMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -205,7 +207,7 @@ public class KuGouMusicProvider : IMusicProvider
         throw new NotImplementedException();
     }
 
-    public Task<List<MusicResultShow>> GetTagMusicsAsync(string tagId)
+    public Task<List<Music>> GetTagMusicsAsync(string tagId)
     {
         throw new NotImplementedException();
     }
@@ -236,7 +238,7 @@ public class KuGouMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (json.IsEmpty())
@@ -287,7 +289,7 @@ public class KuGouMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 

@@ -8,7 +8,7 @@ using NetMusicLib.Models;
 using NetMusicLib.Models.MiGu;
 
 namespace NetMusicLib.Utils;
-public class NetEaseUtils
+internal class NetEaseUtils
 {
     private static readonly Random MyRandom = new Random();
     private const string RandomBaseString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

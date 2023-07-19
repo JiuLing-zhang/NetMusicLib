@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using JiuLing.CommonLibs.ExtensionMethods;
+using JiuLing.CommonLibs.Net;
 using JiuLing.CommonLibs.Security;
 using Microsoft.Extensions.Logging;
 using NetMusicLib.Enums;
@@ -8,7 +9,7 @@ using NetMusicLib.Models.NetEase;
 using NetMusicLib.Utils;
 
 namespace NetMusicLib.MusicProvider;
-public class NetEaseMusicProvider : IMusicProvider
+internal class NetEaseMusicProvider : IMusicProvider
 {
     private readonly HttpClient _httpClient;
     private const PlatformEnum Platform = PlatformEnum.NetEase;
@@ -42,7 +43,7 @@ public class NetEaseMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -77,9 +78,9 @@ public class NetEaseMusicProvider : IMusicProvider
         }
     }
 
-    public async Task<List<MusicResultShow>> SearchAsync(string keyword)
+    public async Task<List<Music>> SearchAsync(string keyword)
     {
-        var musics = new List<MusicResultShow>();
+        var musics = new List<Music>();
 
         try
         {
@@ -97,7 +98,7 @@ public class NetEaseMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
 
             ResultBase<MusicSearchHttpResult>? result;
             try
@@ -126,7 +127,7 @@ public class NetEaseMusicProvider : IMusicProvider
                     {
                         artistName = string.Join("、", song.ar.Select(x => x.name).ToList());
                     }
-                    var music = new MusicResultShow()
+                    var music = new Music()
                     {
                         Id = MD5Utils.GetStringValueToLower($"{Platform}-{song.id}"),
                         Platform = Platform,
@@ -203,7 +204,7 @@ public class NetEaseMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -312,11 +313,11 @@ public class NetEaseMusicProvider : IMusicProvider
         }
     }
 
-    public async Task<List<MusicResultShow>> GetTagMusicsAsync(string tagId)
+    public async Task<List<Music>> GetTagMusicsAsync(string tagId)
     {
         try
         {
-            var musics = new List<MusicResultShow>();
+            var musics = new List<Music>();
             string url = $"{UrlBase.NetEase.GetTagMusicsUrl}";
 
             var postData = NetEaseUtils.GetPostDataForTagMusics(tagId);
@@ -409,7 +410,7 @@ public class NetEaseMusicProvider : IMusicProvider
                     }
                 }
 
-                var music = new MusicResultShow()
+                var music = new Music()
                 {
                     Id = MD5Utils.GetStringValueToLower($"{Platform}-{track.id}"),
                     Platform = Platform,
@@ -429,14 +430,14 @@ public class NetEaseMusicProvider : IMusicProvider
         catch (Exception ex)
         {
             _logger?.LogError("网易标签歌单加载失败。", ex);
-            return new List<MusicResultShow>();
+            return new List<Music>();
         }
     }
-    public async Task<List<MusicResultShow>> GetTopMusicsAsync(string topId)
+    public async Task<List<Music>> GetTopMusicsAsync(string topId)
     {
         try
         {
-            var musics = new List<MusicResultShow>();
+            var musics = new List<Music>();
             string url = $"{UrlBase.NetEase.GetTagMusicsUrl}";
 
             var postData = NetEaseUtils.GetPostDataForTagMusics(topId);
@@ -529,7 +530,7 @@ public class NetEaseMusicProvider : IMusicProvider
                     }
                 }
 
-                var music = new MusicResultShow()
+                var music = new Music()
                 {
                     Id = MD5Utils.GetStringValueToLower($"{Platform}-{track.id}"),
                     Platform = Platform,
@@ -550,7 +551,7 @@ public class NetEaseMusicProvider : IMusicProvider
         catch (Exception ex)
         {
             _logger?.LogError("网易排行榜歌单加载失败。", ex);
-            return new List<MusicResultShow>();
+            return new List<Music>();
         }
     }
 
@@ -571,7 +572,7 @@ public class NetEaseMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "*/*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 

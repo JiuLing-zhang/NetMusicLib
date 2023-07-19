@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using JiuLing.CommonLibs.ExtensionMethods;
+using JiuLing.CommonLibs.Net;
 using JiuLing.CommonLibs.Security;
 using Microsoft.Extensions.Logging;
 using NetMusicLib.Enums;
@@ -51,9 +52,9 @@ internal class KuWoMusicProvider : IMusicProvider
         throw new NotImplementedException();
     }
 
-    public async Task<List<MusicResultShow>> SearchAsync(string keyword)
+    public async Task<List<Music>> SearchAsync(string keyword)
     {
-        var musics = new List<MusicResultShow>();
+        var musics = new List<Music>();
 
         try
         {
@@ -66,7 +67,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/");
             request.Headers.Add("Host", "kuwo.cn");
             request.Headers.Add("csrf", _csrf);
@@ -92,7 +93,7 @@ internal class KuWoMusicProvider : IMusicProvider
             {
                 try
                 {
-                    var music = new MusicResultShow()
+                    var music = new Music()
                     {
                         Id = MD5Utils.GetStringValueToLower($"{Platform}-{httpMusic.rid}"),
                         Platform = Platform,
@@ -135,9 +136,9 @@ internal class KuWoMusicProvider : IMusicProvider
         return Task.FromResult(KuWoUtils.GetSongMenusFromTop());
     }
 
-    public async Task<List<MusicResultShow>> GetTopMusicsAsync(string topId)
+    public async Task<List<Music>> GetTopMusicsAsync(string topId)
     {
-        var musics = new List<MusicResultShow>();
+        var musics = new List<Music>();
         try
         {
             string url = $"{UrlBase.KuWo.GetTopMusicsUrl}?bangId={topId}&pn=1&rn=20&httpsStatus=1&reqId={_reqId}";
@@ -149,7 +150,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/rankList");
             request.Headers.Add("Host", "www.kuwo.cn");
             request.Headers.Add("csrf", _csrf);
@@ -161,7 +162,7 @@ internal class KuWoMusicProvider : IMusicProvider
             {
                 try
                 {
-                    musics.Add(new MusicResultShow()
+                    musics.Add(new Music()
                     {
                         Id = MD5Utils.GetStringValueToLower($"{Platform}-{bangMusic.rid}"),
                         Platform = Platform,
@@ -201,7 +202,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/");
             request.Headers.Add("Host", "www.kuwo.cn");
             request.Headers.Add("csrf", _csrf);
@@ -295,7 +296,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/");
             request.Headers.Add("Host", "www.kuwo.cn");
             request.Headers.Add("csrf", _csrf);
@@ -329,7 +330,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/playlists");
             request.Headers.Add("Host", "www.kuwo.cn");
             request.Headers.Add("csrf", _csrf);
@@ -363,9 +364,9 @@ internal class KuWoMusicProvider : IMusicProvider
         return songMenus;
     }
 
-    public async Task<List<MusicResultShow>> GetTagMusicsAsync(string tagId)
+    public async Task<List<Music>> GetTagMusicsAsync(string tagId)
     {
-        var musics = new List<MusicResultShow>();
+        var musics = new List<Music>();
         try
         {
             string url = $"{UrlBase.KuWo.GetTagMusicsUrl}?pid={tagId}&pn=1&rn=20&httpsStatus=1&reqId={_reqId}";
@@ -377,7 +378,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/playlists");
             request.Headers.Add("Host", "www.kuwo.cn");
             request.Headers.Add("csrf", _csrf);
@@ -389,7 +390,7 @@ internal class KuWoMusicProvider : IMusicProvider
             {
                 try
                 {
-                    musics.Add(new MusicResultShow()
+                    musics.Add(new Music()
                     {
                         Id = MD5Utils.GetStringValueToLower($"{Platform}-{bangMusic.rid}"),
                         Platform = Platform,
@@ -428,7 +429,7 @@ internal class KuWoMusicProvider : IMusicProvider
             request.Headers.Add("Accept", "application/json, text/plain, */*");
             request.Headers.Add("Accept-Encoding", "gzip, deflate");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
-            request.Headers.Add("User-Agent", RequestHeaderBase.UserAgentEdge);
+            request.Headers.Add("User-Agent", BrowserDefaultHeader.EdgeUserAgent);
             request.Headers.Add("Referer", "http://www.kuwo.cn/");
             request.Headers.Add("Host", "www.kuwo.cn");
             request.Headers.Add("csrf", _csrf);

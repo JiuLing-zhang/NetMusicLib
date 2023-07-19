@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace NetMusicLib.Utils;
-public class KuGouUtils
+internal class KuGouUtils
 {
     private const string SearchKey = "NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt";
     public static string GetSearchData(string keyword)

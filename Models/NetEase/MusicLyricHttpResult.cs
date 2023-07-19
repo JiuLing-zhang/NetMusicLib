@@ -1,13 +1,11 @@
-﻿namespace NetMusicLib.Models.NetEase
+﻿namespace NetMusicLib.Models.NetEase;
+internal class MusicLyricHttpResult
 {
-    public class MusicLyricHttpResult
-    {
-        public MusicLyricHttpResultLrc? lrc { get; set; }
-        public int code { get; set; }
-    }
+    public MusicLyricHttpResultLrc? lrc { get; set; }
+    public int code { get; set; }
+}
 
-    public class MusicLyricHttpResultLrc
-    {
-        public string lyric { get; set; } = null!;
-    }
+internal class MusicLyricHttpResultLrc
+{
+    public string lyric { get; set; } = null!;
 }

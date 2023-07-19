@@ -1,6 +1,6 @@
 ﻿namespace NetMusicLib.Models.MiGu;
 
-public class HttpMusicTagResult
+internal class HttpMusicTagResult
 {
     public string title { get; set; } = null!;
     public string linkUrl { get; set; } = null!;
