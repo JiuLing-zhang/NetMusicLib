@@ -59,6 +59,7 @@ internal class MiGuMusicProvider : IMusicProvider
 
     public async Task<List<Music>> SearchAsync(string keyword)
     {
+        _logger?.LogInformation("咪咕搜索");
         var musics = new List<Music>();
         try
         {
@@ -102,7 +103,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("咪咕搜索失败。", ex);
+            _logger?.LogError(ex, "咪咕搜索失败。");
         }
 
         return musics;

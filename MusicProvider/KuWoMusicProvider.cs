@@ -81,7 +81,7 @@ internal class KuWoMusicProvider : IMusicProvider
             }
             catch (Exception ex)
             {
-                _logger?.LogError("解析酷我音乐搜索结果失败。", ex);
+                _logger?.LogError(ex, "解析酷我音乐搜索结果失败。");
                 return musics;
             }
             if (httpResult == null || httpResult.code != 200)
@@ -109,13 +109,13 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError("构建酷狗搜索结果失败。", ex);
+                    _logger?.LogError(ex, "构建酷狗搜索结果失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我搜索失败。", ex);
+            _logger?.LogError(ex, "酷我搜索失败。");
         }
 
         return musics;
@@ -177,19 +177,20 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError("酷我榜单歌曲添加失败。", ex);
+                    _logger?.LogError(ex, "酷我榜单歌曲添加失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我榜单歌曲获取失败。", ex);
+            _logger?.LogError(ex, "酷我榜单歌曲获取失败。");
         }
         return musics;
     }
 
     public async Task<List<string>> GetHotWordAsync()
     {
+        _logger?.LogInformation("准备获取热搜");
         var reslt = new List<string>();
         try
         {
@@ -212,7 +213,7 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我热搜词获取失败。", ex);
+            _logger?.LogError(ex, "酷我热搜词获取失败。");
         }
         return reslt;
     }
@@ -245,17 +246,17 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我歌曲详情获取失败。", ex);
+            _logger?.LogError(ex, "酷我歌曲详情获取失败。");
             return "";
         }
         if (httpResult == null)
         {
-            _logger?.LogError("酷我歌曲详情获取失败。", new Exception($"服务器返回异常，ID:{id}"));
+            _logger?.LogError(new Exception($"服务器返回异常，ID:{id}"), "酷我歌曲详情获取失败。");
             return "";
         }
         if (httpResult.status != 200)
         {
-            _logger?.LogError("酷我歌曲详情获取失败。", new Exception($"服务器返回状态异常：{httpResult.message ?? ""}，ID:{id}"));
+            _logger?.LogError(new Exception($"服务器返回状态异常：{httpResult.message ?? ""}，ID:{id}"), "酷我歌曲详情获取失败。");
             return "";
         }
 
@@ -311,7 +312,7 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我标签获取失败。", ex);
+            _logger?.LogError(ex, "酷我标签获取失败。");
             return default;
         }
     }
@@ -352,14 +353,14 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError("酷我标签歌单添加失败。", ex);
+                    _logger?.LogError(ex, "酷我标签歌单添加失败。");
                     throw;
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我标签歌单获取失败。", ex);
+            _logger?.LogError(ex, "酷我标签歌单获取失败。");
         }
         return songMenus;
     }
@@ -405,13 +406,13 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError("酷我榜单歌曲添加失败。", ex);
+                    _logger?.LogError(ex, "酷我榜单歌曲添加失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷我榜单歌曲获取失败。", ex);
+            _logger?.LogError(ex, "酷我榜单歌曲获取失败。");
         }
         return musics;
     }
@@ -446,7 +447,7 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("更新酷我播放地址失败。", ex);
+            _logger?.LogError(ex, "更新酷我播放地址失败。");
             return "";
         }
     }

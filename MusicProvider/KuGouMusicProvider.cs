@@ -57,7 +57,7 @@ internal class KuGouMusicProvider : IMusicProvider
             }
             catch (Exception ex)
             {
-                _logger?.LogError("解析酷狗搜索结果失败。", ex);
+                _logger?.LogError(ex, "解析酷狗搜索结果失败。");
                 return musics;
             }
             if (httpResult == null || httpResult.status != 1 || httpResult.error_code != 0)
@@ -92,14 +92,14 @@ internal class KuGouMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError("构建酷狗搜索结果失败。", ex);
+                    _logger?.LogError(ex, "构建酷狗搜索结果失败。");
 
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷狗搜索失败。", ex);
+            _logger?.LogError(ex, "酷狗搜索失败。");
         }
         return musics;
     }
@@ -192,7 +192,7 @@ internal class KuGouMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷狗歌词获取失败。", ex);
+            _logger?.LogError(ex, "酷狗歌词获取失败。");
             return "";
         }
     }
@@ -261,7 +261,7 @@ internal class KuGouMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("更新酷狗播放地址失败", ex);
+            _logger?.LogError(ex, "更新酷狗播放地址失败");
             return "";
         }
     }
@@ -310,7 +310,7 @@ internal class KuGouMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("酷狗图片地址获取失败", ex);
+            _logger?.LogError(ex, "酷狗图片地址获取失败");
             return "";
         }
     }

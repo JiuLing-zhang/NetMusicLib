@@ -11,5 +11,5 @@ public class GlobalSettings
 
     public static MusicFormatTypeEnum MusicFormatType { get; set; } = MusicFormatTypeEnum.PQ;
 
-    public static ILoggerFactory? LoggerFactory { get; set; }
+    internal static ILoggerFactory? LoggerFactory { get; set; }
 }

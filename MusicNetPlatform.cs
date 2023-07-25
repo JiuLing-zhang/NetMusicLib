@@ -1,4 +1,5 @@
-﻿using NetMusicLib.Enums;
+﻿using Microsoft.Extensions.Logging;
+using NetMusicLib.Enums;
 using NetMusicLib.Models;
 using NetMusicLib.MusicProvider;
 using NetMusicLib.SearchMusic;
@@ -7,14 +8,20 @@ namespace NetMusicLib;
 public class MusicNetPlatform
 {
     //搜索链
-    private readonly SearchAbstract _netEaseSearcher = new NetEaseSearcher();
-    private readonly SearchAbstract _kuGouSearcher = new KuGouSearcher();
-    private readonly SearchAbstract _miGuSearcher = new MiGuSearcher();
-    private readonly SearchAbstract _kuWoSearcher = new KuWoSearcher();
+    private readonly SearchAbstract _netEaseSearcher;
+    private readonly SearchAbstract _kuGouSearcher;
+    private readonly SearchAbstract _miGuSearcher;
+    private readonly SearchAbstract _kuWoSearcher;
 
-    public MusicNetPlatform()
+    public MusicNetPlatform(ILoggerFactory? loggerFactory)
     {
+        GlobalSettings.LoggerFactory = loggerFactory;
         //搜索
+        _netEaseSearcher = new NetEaseSearcher();
+        _kuGouSearcher = new KuGouSearcher();
+        _miGuSearcher = new MiGuSearcher();
+        _kuWoSearcher = new KuWoSearcher();
+
         _miGuSearcher.SetNextHandler(_kuWoSearcher);
         _kuWoSearcher.SetNextHandler(_netEaseSearcher);
         _netEaseSearcher.SetNextHandler(_kuGouSearcher);

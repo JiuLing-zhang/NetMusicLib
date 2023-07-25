@@ -54,7 +54,7 @@ internal class NetEaseMusicProvider : IMusicProvider
             }
             catch (Exception ex)
             {
-                _logger?.LogError("解析网易搜索建议失败。", ex);
+                _logger?.LogError(ex, "解析网易搜索建议失败。");
                 return searchSuggestList;
             }
 
@@ -73,7 +73,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易搜索建议获取失败。", ex);
+            _logger?.LogError(ex, "网易搜索建议获取失败。");
             return new List<string>();
         }
     }
@@ -109,7 +109,7 @@ internal class NetEaseMusicProvider : IMusicProvider
             }
             catch (Exception ex)
             {
-                _logger?.LogError("解析网易搜索结果失败。", ex);
+                _logger?.LogError(ex, "解析网易搜索结果失败。");
                 return musics;
             }
 
@@ -143,13 +143,13 @@ internal class NetEaseMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError("构建网易搜索结果失败。", ex);
+                    _logger?.LogError(ex, "构建网易搜索结果失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易搜索失败。", ex);
+            _logger?.LogError(ex, "网易搜索失败。");
         }
         return musics;
     }
@@ -227,7 +227,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易歌词获取失败。", ex);
+            _logger?.LogError(ex, "网易歌词获取失败。");
             return "";
         }
     }
@@ -279,7 +279,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易热搜获取失败。", ex);
+            _logger?.LogError(ex, "网易热搜获取失败。");
             return default;
         }
     }
@@ -308,7 +308,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易标签获取歌单失败。", ex);
+            _logger?.LogError(ex, "网易标签获取歌单失败。");
             return new List<SongMenu>();
         }
     }
@@ -429,7 +429,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易标签歌单加载失败。", ex);
+            _logger?.LogError(ex, "网易标签歌单加载失败。");
             return new List<Music>();
         }
     }
@@ -550,7 +550,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易排行榜歌单加载失败。", ex);
+            _logger?.LogError(ex, "网易排行榜歌单加载失败。");
             return new List<Music>();
         }
     }
@@ -595,7 +595,7 @@ internal class NetEaseMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError("网易获取播放地址失败。", ex);
+            _logger?.LogError(ex, "网易获取播放地址失败。");
             return "";
         }
     }
