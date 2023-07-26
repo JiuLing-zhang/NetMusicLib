@@ -14,6 +14,8 @@ internal class KuGouMusicProvider : IMusicProvider
     private readonly HttpClient _httpClient;
     private const PlatformEnum Platform = PlatformEnum.KuGou;
     private readonly ILogger<KuGouMusicProvider>? _logger;
+
+    public MusicFormatTypeEnum MusicFormatType { get; set; }
     public KuGouMusicProvider()
     {
         _logger = GlobalSettings.LoggerFactory?.CreateLogger<KuGouMusicProvider>();
@@ -21,9 +23,14 @@ internal class KuGouMusicProvider : IMusicProvider
         var handler = new HttpClientHandler();
         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         _httpClient = new HttpClient(handler);
-        _httpClient.Timeout = TimeSpan.FromSeconds(5);
-
+        _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
+
+    public Task InitializeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
     public async Task<List<Music>> SearchAsync(string keyword)
     {
         var musics = new List<Music>();

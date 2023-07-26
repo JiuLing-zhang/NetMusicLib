@@ -8,8 +8,5 @@ public class GlobalSettings
     {
 
     }
-
-    public static MusicFormatTypeEnum MusicFormatType { get; set; } = MusicFormatTypeEnum.PQ;
-
     internal static ILoggerFactory? LoggerFactory { get; set; }
 }

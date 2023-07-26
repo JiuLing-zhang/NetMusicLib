@@ -1,8 +1,12 @@
-﻿using NetMusicLib.Models;
+﻿using NetMusicLib.Enums;
+using NetMusicLib.Models;
 
 namespace NetMusicLib.MusicProvider;
 internal interface IMusicProvider
 {
+    MusicFormatTypeEnum MusicFormatType { get; set; }
+    Task InitializeAsync();
+
     /// <summary>
     /// 获取音乐标签分类
     /// </summary>

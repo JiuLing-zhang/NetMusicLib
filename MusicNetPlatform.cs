@@ -13,9 +13,8 @@ public class MusicNetPlatform
     private readonly SearchAbstract _miGuSearcher;
     private readonly SearchAbstract _kuWoSearcher;
 
-    public MusicNetPlatform(ILoggerFactory? loggerFactory)
+    public MusicNetPlatform()
     {
-        GlobalSettings.LoggerFactory = loggerFactory;
         //搜索
         _netEaseSearcher = new NetEaseSearcher();
         _kuGouSearcher = new KuGouSearcher();
@@ -25,6 +24,25 @@ public class MusicNetPlatform
         _miGuSearcher.SetNextHandler(_kuWoSearcher);
         _kuWoSearcher.SetNextHandler(_netEaseSearcher);
         _netEaseSearcher.SetNextHandler(_kuGouSearcher);
+    }
+
+    public async Task InitializeAsync(MusicFormatTypeEnum musicFormatType = MusicFormatTypeEnum.PQ, ILoggerFactory? loggerFactory = null)
+    {
+        GlobalSettings.LoggerFactory = loggerFactory;
+
+        await MusicProviderFactory.Create(PlatformEnum.NetEase).InitializeAsync();
+        await MusicProviderFactory.Create(PlatformEnum.MiGu).InitializeAsync();
+        await MusicProviderFactory.Create(PlatformEnum.KuGou).InitializeAsync();
+        await MusicProviderFactory.Create(PlatformEnum.KuWo).InitializeAsync();
+        SetMusicFormatType(musicFormatType);
+    }
+
+    public void SetMusicFormatType(MusicFormatTypeEnum musicFormatType)
+    {
+        MusicProviderFactory.Create(PlatformEnum.NetEase).MusicFormatType = musicFormatType;
+        MusicProviderFactory.Create(PlatformEnum.MiGu).MusicFormatType = musicFormatType;
+        MusicProviderFactory.Create(PlatformEnum.KuGou).MusicFormatType = musicFormatType;
+        MusicProviderFactory.Create(PlatformEnum.KuWo).MusicFormatType = musicFormatType;
     }
 
     public async Task<List<string>> GetHotWordAsync()

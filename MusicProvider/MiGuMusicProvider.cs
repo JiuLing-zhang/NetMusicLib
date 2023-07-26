@@ -14,6 +14,7 @@ internal class MiGuMusicProvider : IMusicProvider
     private readonly HttpClient _httpClient;
     private const PlatformEnum Platform = PlatformEnum.MiGu;
     private readonly ILogger<MiGuMusicProvider>? _logger;
+    public MusicFormatTypeEnum MusicFormatType { get; set; }
 
     public MiGuMusicProvider()
     {
@@ -23,15 +24,11 @@ internal class MiGuMusicProvider : IMusicProvider
         handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         _httpClient = new HttpClient(handler);
-        _httpClient.Timeout = TimeSpan.FromSeconds(5);
-        Task.Run(async () =>
-        {
-            await InitCommonArgs();
-        });
+        _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
-
-    private async Task InitCommonArgs()
+    public async Task InitializeAsync()
     {
+        //Init common args
         var request = new HttpRequestMessage()
         {
             RequestUri = new Uri(UrlBase.MiGu.Index),
@@ -56,10 +53,8 @@ internal class MiGuMusicProvider : IMusicProvider
         MiGuUtils.SetCommonArgs(sourceId, channelId, appVersion);
     }
 
-
     public async Task<List<Music>> SearchAsync(string keyword)
     {
-        _logger?.LogInformation("咪咕搜索");
         var musics = new List<Music>();
         try
         {
@@ -138,7 +133,7 @@ internal class MiGuMusicProvider : IMusicProvider
                 return "";
             }
 
-            string playUrlPath = MiGuUtils.GetPlayUrlPath(result.resource[0].newRateFormats, GlobalSettings.MusicFormatType);
+            string playUrlPath = MiGuUtils.GetPlayUrlPath(result.resource[0].newRateFormats, MusicFormatType);
             if (playUrlPath.IsEmpty())
             {
                 return "";

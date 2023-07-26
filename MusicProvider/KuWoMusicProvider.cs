@@ -15,21 +15,15 @@ internal class KuWoMusicProvider : IMusicProvider
     private readonly ILogger<KuWoMusicProvider>? _logger;
     private readonly HttpClient _httpClient;
     private readonly CookieContainer _cookieContainer = new CookieContainer();
+    public MusicFormatTypeEnum MusicFormatType { get; set; }
+
     private const PlatformEnum Platform = PlatformEnum.KuWo;
     private readonly string _reqId = JiuLing.CommonLibs.GuidUtils.GetFormatD();
     public string _csrf
     {
         get
         {
-            var csrf = _cookieContainer.GetCookies(new Uri("http://www.kuwo.cn"))["kw_token"]?.Value ?? "";
-            if (csrf.IsNotEmpty())
-            {
-                return csrf;
-            }
-            var task = Task.Run(InitCookie);
-            task.Wait();
-            csrf = _cookieContainer.GetCookies(new Uri("http://www.kuwo.cn"))["kw_token"]?.Value ?? "";
-            return csrf;
+            return _cookieContainer.GetCookies(new Uri("http://www.kuwo.cn"))["kw_token"]?.Value ?? "";
         }
     }
     public KuWoMusicProvider()
@@ -40,10 +34,12 @@ internal class KuWoMusicProvider : IMusicProvider
         handler.CookieContainer = _cookieContainer;
         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         _httpClient = new HttpClient(handler);
-        _httpClient.Timeout = TimeSpan.FromSeconds(5);
+        _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
-    private async Task InitCookie()
+
+    public async Task InitializeAsync()
     {
+        //Init cookie
         await _httpClient.GetStringAsync("http://www.kuwo.cn");
     }
 
@@ -190,7 +186,6 @@ internal class KuWoMusicProvider : IMusicProvider
 
     public async Task<List<string>> GetHotWordAsync()
     {
-        _logger?.LogInformation("准备获取热搜");
         var reslt = new List<string>();
         try
         {

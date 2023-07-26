@@ -14,6 +14,7 @@ internal class NetEaseMusicProvider : IMusicProvider
     private readonly HttpClient _httpClient;
     private const PlatformEnum Platform = PlatformEnum.NetEase;
     private readonly ILogger<NetEaseMusicProvider>? _logger;
+    public MusicFormatTypeEnum MusicFormatType { get; set; }
     public NetEaseMusicProvider()
     {
         _logger = GlobalSettings.LoggerFactory?.CreateLogger<NetEaseMusicProvider>();
@@ -21,7 +22,11 @@ internal class NetEaseMusicProvider : IMusicProvider
         var handler = new HttpClientHandler();
         handler.AutomaticDecompression = DecompressionMethods.All;
         _httpClient = new HttpClient(handler);
-        _httpClient.Timeout = TimeSpan.FromSeconds(5);
+        _httpClient.Timeout = TimeSpan.FromSeconds(10);
+    }
+    public Task InitializeAsync()
+    {
+        return Task.CompletedTask;
     }
 
     public async Task<List<string>> GetSearchSuggestAsync(string keyword)
