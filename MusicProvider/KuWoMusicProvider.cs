@@ -26,7 +26,13 @@ internal class KuWoMusicProvider : IMusicProvider
             return _cookieContainer.GetCookies(new Uri("http://www.kuwo.cn"))["kw_token"]?.Value ?? "";
         }
     }
-    public KuWoMusicProvider()
+
+    private static readonly KuWoMusicProvider Instance = new();
+    public static KuWoMusicProvider GetInstance()
+    {
+        return Instance;
+    }
+    private KuWoMusicProvider()
     {
         _logger = GlobalSettings.LoggerFactory?.CreateLogger<KuWoMusicProvider>();
 

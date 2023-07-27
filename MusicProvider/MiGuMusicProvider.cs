@@ -16,7 +16,12 @@ internal class MiGuMusicProvider : IMusicProvider
     private readonly ILogger<MiGuMusicProvider>? _logger;
     public MusicFormatTypeEnum MusicFormatType { get; set; }
 
-    public MiGuMusicProvider()
+    private static readonly MiGuMusicProvider Instance = new();
+    public static MiGuMusicProvider GetInstance()
+    {
+        return Instance;
+    }
+    private MiGuMusicProvider()
     {
         _logger = GlobalSettings.LoggerFactory?.CreateLogger<MiGuMusicProvider>();
 

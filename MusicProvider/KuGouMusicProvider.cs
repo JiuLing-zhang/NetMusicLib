@@ -16,7 +16,13 @@ internal class KuGouMusicProvider : IMusicProvider
     private readonly ILogger<KuGouMusicProvider>? _logger;
 
     public MusicFormatTypeEnum MusicFormatType { get; set; }
-    public KuGouMusicProvider()
+
+    private static readonly KuGouMusicProvider Instance = new();
+    public static KuGouMusicProvider GetInstance()
+    {
+        return Instance;
+    }
+    private KuGouMusicProvider()
     {
         _logger = GlobalSettings.LoggerFactory?.CreateLogger<KuGouMusicProvider>();
 

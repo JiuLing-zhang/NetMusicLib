@@ -15,7 +15,13 @@ internal class NetEaseMusicProvider : IMusicProvider
     private const PlatformEnum Platform = PlatformEnum.NetEase;
     private readonly ILogger<NetEaseMusicProvider>? _logger;
     public MusicFormatTypeEnum MusicFormatType { get; set; }
-    public NetEaseMusicProvider()
+
+    private static readonly NetEaseMusicProvider Instance = new();
+    public static NetEaseMusicProvider GetInstance()
+    {
+        return Instance;
+    }
+    private NetEaseMusicProvider()
     {
         _logger = GlobalSettings.LoggerFactory?.CreateLogger<NetEaseMusicProvider>();
 
