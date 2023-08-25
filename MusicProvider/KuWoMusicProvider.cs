@@ -10,14 +10,13 @@ using NetMusicLib.Models.KuWo;
 using NetMusicLib.Utils;
 
 namespace NetMusicLib.MusicProvider;
-internal class KuWoMusicProvider : IMusicProvider
+public class KuWoMusicProvider : IMusicProvider
 {
-    private readonly ILogger<KuWoMusicProvider>? _logger;
+    private readonly ILogger<KuWoMusicProvider> _logger;
     private readonly HttpClient _httpClient;
     private readonly CookieContainer _cookieContainer = new CookieContainer();
-    public MusicFormatTypeEnum MusicFormatType { get; set; }
 
-    private const PlatformEnum Platform = PlatformEnum.KuWo;
+    public PlatformEnum Platform => PlatformEnum.KuWo;
     private readonly string _reqId = JiuLing.CommonLibs.GuidUtils.GetFormatD();
     public string _csrf
     {
@@ -27,23 +26,21 @@ internal class KuWoMusicProvider : IMusicProvider
         }
     }
 
-    private static readonly KuWoMusicProvider Instance = new();
-    public static KuWoMusicProvider GetInstance()
+    public KuWoMusicProvider(ILogger<KuWoMusicProvider> logger)
     {
-        return Instance;
-    }
-    private KuWoMusicProvider()
-    {
-        _logger = GlobalSettings.LoggerFactory?.CreateLogger<KuWoMusicProvider>();
+        _logger = logger;
 
         var handler = new HttpClientHandler();
         handler.CookieContainer = _cookieContainer;
         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         _httpClient = new HttpClient(handler);
         _httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+        var task = Task.Run(InitializeAsync);
+        task.Wait();
     }
 
-    public async Task InitializeAsync()
+    private async Task InitializeAsync()
     {
         //Init cookie
         await _httpClient.GetStringAsync("http://www.kuwo.cn");
@@ -83,7 +80,7 @@ internal class KuWoMusicProvider : IMusicProvider
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "解析酷我音乐搜索结果失败。");
+                _logger.LogError(ex, "解析酷我音乐搜索结果失败。");
                 return musics;
             }
             if (httpResult == null || httpResult.code != 200)
@@ -111,13 +108,13 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, "构建酷狗搜索结果失败。");
+                    _logger.LogError(ex, "构建酷狗搜索结果失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我搜索失败。");
+            _logger.LogError(ex, "酷我搜索失败。");
         }
 
         return musics;
@@ -179,13 +176,13 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, "酷我榜单歌曲添加失败。");
+                    _logger.LogError(ex, "酷我榜单歌曲添加失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我榜单歌曲获取失败。");
+            _logger.LogError(ex, "酷我榜单歌曲获取失败。");
         }
         return musics;
     }
@@ -214,7 +211,7 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我热搜词获取失败。");
+            _logger.LogError(ex, "酷我热搜词获取失败。");
         }
         return reslt;
     }
@@ -247,17 +244,17 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我歌曲详情获取失败。");
+            _logger.LogError(ex, "酷我歌曲详情获取失败。");
             return "";
         }
         if (httpResult == null)
         {
-            _logger?.LogError(new Exception($"服务器返回异常，ID:{id}"), "酷我歌曲详情获取失败。");
+            _logger.LogError(new Exception($"服务器返回异常，ID:{id}"), "酷我歌曲详情获取失败。");
             return "";
         }
         if (httpResult.status != 200)
         {
-            _logger?.LogError(new Exception($"服务器返回状态异常：{httpResult.message ?? ""}，ID:{id}"), "酷我歌曲详情获取失败。");
+            _logger.LogError(new Exception($"服务器返回状态异常：{httpResult.message ?? ""}，ID:{id}"), "酷我歌曲详情获取失败。");
             return "";
         }
 
@@ -313,7 +310,7 @@ internal class KuWoMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我标签获取失败。");
+            _logger.LogError(ex, "酷我标签获取失败。");
             return default;
         }
     }
@@ -354,14 +351,14 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, "酷我标签歌单添加失败。");
+                    _logger.LogError(ex, "酷我标签歌单添加失败。");
                     throw;
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我标签歌单获取失败。");
+            _logger.LogError(ex, "酷我标签歌单获取失败。");
         }
         return songMenus;
     }
@@ -407,13 +404,13 @@ internal class KuWoMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, "酷我榜单歌曲添加失败。");
+                    _logger.LogError(ex, "酷我榜单歌曲添加失败。");
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷我榜单歌曲获取失败。");
+            _logger.LogError(ex, "酷我榜单歌曲获取失败。");
         }
         return musics;
     }
@@ -441,14 +438,14 @@ internal class KuWoMusicProvider : IMusicProvider
             var resultObj = json.ToObject<HttpResultBase<HttpPlayUrlResult>>();
             if (resultObj == null || resultObj.code != 200 || resultObj.data.url.IsEmpty())
             {
-                _logger?.LogInformation($"更新酷我播放地址失败，歌曲：{id}。");
+                _logger.LogInformation($"更新酷我播放地址失败，歌曲：{id}。");
                 return "";
             }
             return resultObj.data.url;
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "更新酷我播放地址失败。");
+            _logger.LogError(ex, "更新酷我播放地址失败。");
             return "";
         }
     }

@@ -9,32 +9,19 @@ using NetMusicLib.Models.KuGou;
 using NetMusicLib.Utils;
 
 namespace NetMusicLib.MusicProvider;
-internal class KuGouMusicProvider : IMusicProvider
+public class KuGouMusicProvider : IMusicProvider
 {
     private readonly HttpClient _httpClient;
-    private const PlatformEnum Platform = PlatformEnum.KuGou;
-    private readonly ILogger<KuGouMusicProvider>? _logger;
+    public PlatformEnum Platform => PlatformEnum.KuGou;
+    private readonly ILogger<KuGouMusicProvider> _logger;
 
-    public MusicFormatTypeEnum MusicFormatType { get; set; }
-
-    private static readonly KuGouMusicProvider Instance = new();
-    public static KuGouMusicProvider GetInstance()
+    public KuGouMusicProvider(ILogger<KuGouMusicProvider> logger)
     {
-        return Instance;
-    }
-    private KuGouMusicProvider()
-    {
-        _logger = GlobalSettings.LoggerFactory?.CreateLogger<KuGouMusicProvider>();
-
+        _logger = logger;
         var handler = new HttpClientHandler();
         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         _httpClient = new HttpClient(handler);
         _httpClient.Timeout = TimeSpan.FromSeconds(10);
-    }
-
-    public Task InitializeAsync()
-    {
-        return Task.CompletedTask;
     }
 
     public async Task<List<Music>> SearchAsync(string keyword)
@@ -70,7 +57,7 @@ internal class KuGouMusicProvider : IMusicProvider
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "解析酷狗搜索结果失败。");
+                _logger.LogError(ex, "解析酷狗搜索结果失败。");
                 return musics;
             }
             if (httpResult == null || httpResult.status != 1 || httpResult.error_code != 0)
@@ -105,14 +92,14 @@ internal class KuGouMusicProvider : IMusicProvider
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, "构建酷狗搜索结果失败。");
+                    _logger.LogError(ex, "构建酷狗搜索结果失败。");
 
                 }
             }
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷狗搜索失败。");
+            _logger.LogError(ex, "酷狗搜索失败。");
         }
         return musics;
     }
@@ -205,7 +192,7 @@ internal class KuGouMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷狗歌词获取失败。");
+            _logger.LogError(ex, "酷狗歌词获取失败。");
             return "";
         }
     }
@@ -229,14 +216,14 @@ internal class KuGouMusicProvider : IMusicProvider
     {
         if (extendDataJson.IsEmpty())
         {
-            _logger?.LogInformation("更新酷狗播放地址失败，扩展数据不存在");
+            _logger.LogInformation("更新酷狗播放地址失败，扩展数据不存在");
             return "";
         }
 
         var extendData = extendDataJson.ToObject<KuGouSearchExtendData>();
         if (extendData == null)
         {
-            _logger?.LogInformation("更新酷狗播放地址失败，扩展数据格式错误");
+            _logger.LogInformation("更新酷狗播放地址失败，扩展数据格式错误");
             return "";
         }
         try
@@ -256,25 +243,25 @@ internal class KuGouMusicProvider : IMusicProvider
             string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             if (json.IsEmpty())
             {
-                _logger?.LogInformation("更新酷狗播放地址失败，服务器返回空。");
+                _logger.LogInformation("更新酷狗播放地址失败，服务器返回空。");
                 return "";
             }
             var httpResult = json.ToObject<HttpResultBase<MusicDetailHttpResult>>();
             if (httpResult == null)
             {
-                _logger?.LogInformation("更新酷狗播放地址失败，服务器数据格式不正确。");
+                _logger.LogInformation("更新酷狗播放地址失败，服务器数据格式不正确。");
                 return "";
             }
             if (httpResult.status != 1 || httpResult.error_code != 0)
             {
-                _logger?.LogInformation("更新酷狗播放地址失败，服务器返回错误。");
+                _logger.LogInformation("更新酷狗播放地址失败，服务器返回错误。");
                 return "";
             }
             return httpResult.data.play_url;
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "更新酷狗播放地址失败");
+            _logger.LogError(ex, "更新酷狗播放地址失败");
             return "";
         }
     }
@@ -323,7 +310,7 @@ internal class KuGouMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "酷狗图片地址获取失败");
+            _logger.LogError(ex, "酷狗图片地址获取失败");
             return "";
         }
     }

@@ -2,10 +2,9 @@
 using NetMusicLib.Models;
 
 namespace NetMusicLib.MusicProvider;
-internal interface IMusicProvider
+public interface IMusicProvider
 {
-    MusicFormatTypeEnum MusicFormatType { get; set; }
-    Task InitializeAsync();
+    public PlatformEnum Platform { get; }
 
     /// <summary>
     /// 获取音乐标签分类

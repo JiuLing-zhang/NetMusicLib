@@ -9,29 +9,27 @@ using NetMusicLib.Models.MiGu;
 using NetMusicLib.Utils;
 
 namespace NetMusicLib.MusicProvider;
-internal class MiGuMusicProvider : IMusicProvider
+public class MiGuMusicProvider : IMusicProvider
 {
     private readonly HttpClient _httpClient;
-    private const PlatformEnum Platform = PlatformEnum.MiGu;
-    private readonly ILogger<MiGuMusicProvider>? _logger;
-    public MusicFormatTypeEnum MusicFormatType { get; set; }
+    public PlatformEnum Platform => PlatformEnum.MiGu;
 
-    private static readonly MiGuMusicProvider Instance = new();
-    public static MiGuMusicProvider GetInstance()
+    private readonly ILogger<MiGuMusicProvider> _logger;
+
+    public MiGuMusicProvider(ILogger<MiGuMusicProvider> logger)
     {
-        return Instance;
-    }
-    private MiGuMusicProvider()
-    {
-        _logger = GlobalSettings.LoggerFactory?.CreateLogger<MiGuMusicProvider>();
+        _logger = logger;
 
         var handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
         handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         _httpClient = new HttpClient(handler);
         _httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+        var task = Task.Run(InitializeAsync);
+        task.Wait();
     }
-    public async Task InitializeAsync()
+    private async Task InitializeAsync()
     {
         //Init common args
         var request = new HttpRequestMessage()
@@ -103,7 +101,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "咪咕搜索失败。");
+            _logger.LogError(ex, "咪咕搜索失败。");
         }
 
         return musics;
@@ -138,7 +136,7 @@ internal class MiGuMusicProvider : IMusicProvider
                 return "";
             }
 
-            string playUrlPath = MiGuUtils.GetPlayUrlPath(result.resource[0].newRateFormats, MusicFormatType);
+            string playUrlPath = MiGuUtils.GetPlayUrlPath(result.resource[0].newRateFormats, MusicProviderSettings.MusicFormatType);
             if (playUrlPath.IsEmpty())
             {
                 return "";
@@ -147,7 +145,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogInformation("咪咕更新播放地址失败。", ex);
+            _logger.LogInformation("咪咕更新播放地址失败。", ex);
             return "";
         }
     }
@@ -205,7 +203,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogInformation("咪咕获取歌词失败。", ex);
+            _logger.LogInformation("咪咕获取歌词失败。", ex);
             return "";
         }
     }
@@ -230,7 +228,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogInformation("咪咕获取热搜失败。", ex);
+            _logger.LogInformation("咪咕获取热搜失败。", ex);
             return default;
         }
     }
@@ -255,7 +253,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogInformation("咪咕歌单标签失败。", ex);
+            _logger.LogInformation("咪咕歌单标签失败。", ex);
             return new List<SongMenu>();
         }
     }
@@ -323,7 +321,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogInformation("咪咕排行榜歌单失败。", ex);
+            _logger.LogInformation("咪咕排行榜歌单失败。", ex);
             return new List<Music>();
         }
     }
@@ -372,7 +370,7 @@ internal class MiGuMusicProvider : IMusicProvider
         }
         catch (Exception ex)
         {
-            _logger?.LogInformation("咪咕标签歌单失败。", ex);
+            _logger.LogInformation("咪咕标签歌单失败。", ex);
             return new List<Music>();
         }
     }
