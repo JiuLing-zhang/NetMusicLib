@@ -1,10 +1,9 @@
-﻿using System.Web;
-using JiuLing.CommonLibs.ExtensionMethods;
+﻿using JiuLing.CommonLibs.ExtensionMethods;
 using JiuLing.CommonLibs.Text;
-using System.Text.RegularExpressions;
-using NetMusicLib.Enums;
 using NetMusicLib.Models;
 using NetMusicLib.Models.MiGu;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace NetMusicLib.Utils;
 internal class MiGuUtils
@@ -93,56 +92,8 @@ internal class MiGuUtils
         return $"id={id}&copyrightId={copyrightId}&resourceType=2&_={timestampLast}&v={timestamp}";
     }
 
-    public static string GetPlayUrlPath(List<HttpMusicDetailResourceNewRateFormats> playResources, MusicFormatTypeEnum musicFormatType)
-    {
-        switch (musicFormatType)
-        {
-            case MusicFormatTypeEnum.PQ:
-                return GetPQPlayUrlPath(playResources);
-            case MusicFormatTypeEnum.HQ:
-                return GetHQPlayUrlPath(playResources);
-            case MusicFormatTypeEnum.SQ:
-                return GetSQPlayUrlPath(playResources);
-            case MusicFormatTypeEnum.ZQ:
-                return GetZQPlayUrlPath(playResources);
-            default:
-                throw new ArgumentOutOfRangeException(nameof(musicFormatType), musicFormatType, "不支持的音质配置");
-        }
-    }
-
     private static readonly string FtpHeadPattern = @"^ftp://\d+\.\d+\.\d+\.\d+:\d+";
-    private static string GetZQPlayUrlPath(List<HttpMusicDetailResourceNewRateFormats> playResources)
-    {
-        var zqResource = playResources.FirstOrDefault(x => x.formatType == "ZQ");
-        if (zqResource != null && RegexUtils.IsMatch(zqResource.iosUrl ?? "", FtpHeadPattern))
-        {
-            return RegexUtils.Replace(zqResource.iosUrl ?? "", FtpHeadPattern, "");
-        }
-        return GetSQPlayUrlPath(playResources);
-    }
-
-    private static string GetSQPlayUrlPath(List<HttpMusicDetailResourceNewRateFormats> playResources)
-    {
-        var sqResource = playResources.FirstOrDefault(x => x.formatType == "SQ");
-        if (sqResource != null && RegexUtils.IsMatch(sqResource.iosUrl ?? "", FtpHeadPattern))
-        {
-            return RegexUtils.Replace(sqResource.iosUrl ?? "", FtpHeadPattern, "");
-        }
-        return GetHQPlayUrlPath(playResources);
-    }
-
-    private static string GetHQPlayUrlPath(List<HttpMusicDetailResourceNewRateFormats> playResources)
-    {
-        var hqResource = playResources.FirstOrDefault(x => x.formatType == "HQ");
-        if (hqResource != null && RegexUtils.IsMatch(hqResource.url ?? "", FtpHeadPattern))
-        {
-            return RegexUtils.Replace(hqResource.url ?? "", FtpHeadPattern, "");
-        }
-
-        return GetPQPlayUrlPath(playResources);
-    }
-
-    private static string GetPQPlayUrlPath(List<HttpMusicDetailResourceNewRateFormats> playResources)
+    public static string GetPlayUrlPath(List<HttpMusicDetailResourceNewRateFormats> playResources)
     {
         var pqResource = playResources.FirstOrDefault(x => x.formatType == "PQ");
         if (pqResource != null && RegexUtils.IsMatch(pqResource.url ?? "", FtpHeadPattern))

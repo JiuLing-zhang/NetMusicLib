@@ -19,11 +19,6 @@ public class MusicNetPlatform
         return _musicProviderList.First(x => x.Platform == platform);
     }
 
-    public void SetMusicFormatType(MusicFormatTypeEnum musicFormatType)
-    {
-        MusicProviderSettings.MusicFormatType = musicFormatType;
-    }
-
     public async Task<List<string>> GetHotWordAsync()
     {
         return await GetMusicProvider(PlatformEnum.KuWo).GetHotWordAsync();

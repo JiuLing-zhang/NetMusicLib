@@ -136,7 +136,7 @@ public class MiGuMusicProvider : IMusicProvider
                 return "";
             }
 
-            string playUrlPath = MiGuUtils.GetPlayUrlPath(result.resource[0].newRateFormats, MusicProviderSettings.MusicFormatType);
+            string playUrlPath = MiGuUtils.GetPlayUrlPath(result.resource[0].newRateFormats);
             if (playUrlPath.IsEmpty())
             {
                 return "";
