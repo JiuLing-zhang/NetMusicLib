@@ -11,16 +11,25 @@ public class SearchManager
         _searches = new List<ISearch>(searches);
     }
 
-    public async Task<List<Music>> DoSearchesAsync(PlatformEnum searchTypes, string keyword)
+    public Task<List<Music>> DoSearchesAsync(PlatformEnum searchTypes, string keyword)
     {
-        var combinedResults = new List<Music>();
+        var tasks = new List<Task<List<Music>>>();
         foreach (var search in _searches)
         {
             if ((search.Platform & searchTypes) != 0)
             {
-                combinedResults.AddRange(await search.DoSearchAsync(keyword));
+                tasks.Add(Task.Run(async () => await search.DoSearchAsync(keyword)));
             }
         }
-        return combinedResults;
+        var combinedResults = new List<Music>();
+        if (tasks.Any())
+        {
+            Task.WaitAll(tasks.ToArray());
+            foreach (var task in tasks)
+            {
+                combinedResults.AddRange(task.Result);
+            }
+        }
+        return Task.FromResult(combinedResults);
     }
 }
